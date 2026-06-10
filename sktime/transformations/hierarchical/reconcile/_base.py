@@ -1,8 +1,8 @@
-from sktime.transformations._hierarchical_reconcile_utils import (
+from sktime.transformations.base import BaseTransformer
+from sktime.transformations.hierarchical.aggregate import Aggregator
+from sktime.transformations.hierarchical.reconcile._utils import (
     _loc_series_idxs,
 )
-from sktime.transformations.aggregate import Aggregator
-from sktime.transformations.base import BaseTransformer
 
 __all__ = ["_ReconcilerTransformer"]
 

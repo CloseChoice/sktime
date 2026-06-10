@@ -27,7 +27,7 @@ from sktime.forecasting.pytorchforecasting import PytorchForecastingNBeats
 from sktime.forecasting.trend import PolynomialTrendForecaster
 from sktime.split import ExpandingWindowSplitter, temporal_train_test_split
 from sktime.tests.test_switch import run_test_for_class
-from sktime.transformations.aggregate import Aggregator
+from sktime.transformations.hierarchical.aggregate import Aggregator
 from sktime.transformations.compose import OptionalPassthrough, YtoX
 from sktime.transformations.series.adapt import TabularToSeriesAdaptor
 from sktime.transformations.series.boxcox import LogTransformer
