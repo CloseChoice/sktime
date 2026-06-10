@@ -20,14 +20,14 @@ import pytest
 from sktime.datatypes import check_is_scitype, get_examples, mtype_to_scitype
 from sktime.tests.test_switch import run_test_module_changed
 from sktime.transformations.compose import FitInTransform
-from sktime.transformations.padder import PaddingTransformer
-from sktime.transformations.series.boxcox import BoxCoxTransformer
-from sktime.transformations.series.exponent import ExponentTransformer
-from sktime.transformations.series.summarize import SummaryTransformer
-from sktime.transformations.tsfresh import (
+from sktime.transformations.panel.padder import PaddingTransformer
+from sktime.transformations.panel.tsfresh import (
     TSFreshFeatureExtractor,
     TSFreshRelevantFeatureExtractor,
 )
+from sktime.transformations.series.boxcox import BoxCoxTransformer
+from sktime.transformations.series.exponent import ExponentTransformer
+from sktime.transformations.series.summarize import SummaryTransformer
 from sktime.utils._testing.hierarchical import _make_hierarchical
 from sktime.utils._testing.scenarios_transformers import (
     TransformerFitTransformHierarchicalMultivariate,
@@ -690,7 +690,7 @@ def test_vectorize_reconstruct_unique_columns():
     ------
     AssertionError if output columns are not as expected.
     """
-    from sktime.transformations.detrend import Detrender
+    from sktime.transformations.series.detrend import Detrender
     from sktime.transformations.series.theta import ThetaLinesTransformer
 
     X = pd.DataFrame({"a": [1, 2], "b": [3, 4], "c": [5, 6]})
@@ -760,7 +760,7 @@ def test_wrong_y_is_not_passed_to_transformer():
     from sktime.pipeline import make_pipeline
     from sktime.regression.distance_based import KNeighborsTimeSeriesRegressor
     from sktime.transformations.compose import FitInTransform
-    from sktime.transformations.interpolate import TSInterpolator
+    from sktime.transformations.panel.interpolate import TSInterpolator
     from sktime.transformations.series.kalman_filter import KalmanFilterTransformerFP
 
     # this test requires the KalmanFilterTransformerFP to be runnable

@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from sktime.tests.test_switch import run_test_for_class
-from sktime.transformations.segment import (
+from sktime.transformations.panel.segment import (
     RandomIntervalSegmenter,
     _rand_intervals_fixed_n,
     _rand_intervals_rand_n,
