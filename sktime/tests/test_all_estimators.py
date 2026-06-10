@@ -16,8 +16,6 @@ from tempfile import TemporaryDirectory
 import numpy as np
 import pandas as pd
 import pytest
-from skbase.utils.stderr_mute import StderrMute
-from skbase.utils.stdout_mute import StdoutMute
 
 from sktime.base import BaseEstimator, BaseObject, load
 from sktime.classification.deep_learning.base import BaseDeepClassifier
@@ -511,6 +509,8 @@ class QuickTester:
         {'test_repr[NaiveForecaster-2]': 'PASSED'}
         """
         from _pytest.outcomes import Skipped
+        from skbase.utils.stderr_mute import StderrMute
+        from skbase.utils.stdout_mute import StdoutMute
 
         tests_to_run = self._check_None_str_or_list_of_str(
             tests_to_run, var_name="tests_to_run"
@@ -642,9 +642,8 @@ class QuickTester:
                 print_if_verbose(f"{key}")
 
                 try:
-                    # with StderrMute(active=verbose < 2), StdoutMute(active=verbose < 2):
-                    test_fun(**deepcopy(args))
-
+                    with StderrMute(active=verbose < 2), StdoutMute(active=verbose < 2):
+                        test_fun(**deepcopy(args))
                     results[key] = "PASSED"
                     print_if_verbose("PASSED")
                 except Skipped as err:
@@ -1467,21 +1466,12 @@ class TestAllEstimators(BaseFixtureGenerator, QuickTester):
 
     def test_fit_does_not_overwrite_hyper_params(self, estimator_instance, scenario):
         """Check that we do not overwrite hyper-parameters in fit."""
-        _check_soft_dependencies("joblib", severity="none")
-        from joblib import hash
-
         estimator = estimator_instance
         set_random_state(estimator)
 
         # Make a physical copy of the original estimator parameters before fitting.
         params = estimator.get_params()
         original_params = deepcopy(params)
-        # remove params that are not deepcopy invariant
-        # e.g. this is not the case for torch tensors, since they encode the storage
-        # location in the hash
-        for param_name, param_value in params.items():
-            if hash(param_value) != hash(deepcopy(param_value)):
-                del original_params[param_name]
 
         # Fit the model
         fitted_est = scenario.run(estimator_instance, method_sequence=["fit"])
@@ -1505,7 +1495,9 @@ class TestAllEstimators(BaseFixtureGenerator, QuickTester):
             # joblib.hash has problems with pandas objects, so we use deep_equals then
             if isinstance(original_value, (pd.DataFrame, pd.Series)):
                 assert deep_equals(new_value, original_value), msg
-            else:
+            elif _check_soft_dependencies("joblib", severity="none"):
+                from joblib import hash
+
                 assert hash(new_value) == hash(original_value), msg
 
     def test_non_state_changing_method_contract(
